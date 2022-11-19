@@ -1,7 +1,7 @@
 // ATTRIBUTION: https://github.com/dougmoscrop/serverless-http
 
-const { DISABLE_SECURE_REQUEST } = process.env
-const shouldDisableSecure = DISABLE_SECURE_REQUEST ?? false
+const { SECURE_EXPRESS } = process.env
+const enableSecure = SECURE_EXPRESS?.toLowerCase() !== 'false'
 
 const http = require('http')
 
@@ -11,10 +11,10 @@ const HTTP_PORT = 80
 module.exports = class ServerlessRequest extends http.IncomingMessage {
   constructor ({ method, url, headers, body, remoteAddress }) {
     super({
-      encrypted: !shouldDisableSecure,
+      encrypted: enableSecure,
       readable: false,
       remoteAddress,
-      address: () => ({ port: !shouldDisableSecure ? HTTP_PORT : HTTPS_PORT }),
+      address: () => ({ port: enableSecure ? HTTPS_PORT : HTTP_PORT }),
       end: Function.prototype,
       destroy: Function.prototype
     })
